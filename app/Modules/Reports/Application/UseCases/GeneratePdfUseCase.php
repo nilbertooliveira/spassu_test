@@ -46,7 +46,7 @@ class GeneratePdfUseCase
                 $x = $pdf->GetX();
                 $y = $pdf->GetY();
                 $w = 60;
-                $pdf->MultiCell($w, 10, utf8_decode($entity->getAuthor()), 1);
+                $pdf->MultiCell($w, 10, utf8_decode($entity->getAuthor()), 1, 'L');
 
                 $height = $pdf->GetY() - $y;
 
@@ -57,7 +57,7 @@ class GeneratePdfUseCase
                 $pdf->Cell(15, $height, utf8_decode($entity->getYearPublication()), 1, 0);
                 $pdf->Cell(15, $height, utf8_decode($entity->getEdition()), 1, 0);
                 $pdf->Cell(20, $height, utf8_decode('R$ ' . number_format($entity->getPrice(), 2, ',', '.')), 1, 0);
-                $pdf->MultiCell(70, $height, utf8_decode($entity->getSubjects()), 1);
+                $pdf->MultiCell(70, $height, utf8_decode($entity->getSubjects()), 1, 'L');
             }
         });
         $pdf->Output('F', $this->pdfFilePath);
