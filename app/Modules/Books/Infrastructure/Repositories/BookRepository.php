@@ -47,17 +47,22 @@ class BookRepository implements BookRepositoryInterface
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Livro com identificador $id não foi encontrado!");
         }
+        return $this->makeEntity($data);
+    }
+
+    public function makeEntity(Book $book): BookEntity
+    {
         return new BookEntity(
-            title: $data->Titulo,
-            publisher: $data->Editora,
-            edition: $data->Edicao,
-            yearPublication: $data->AnoPublicacao,
-            price: $data->Valor,
-            authors: AuthorEntity::fromCollection($data->authors),
-            subjects: SubjectEntity::fromCollection($data->subjects),
-            createdAt: $data->created_at,
-            updatedAt: $data->updated_at,
-            id: $data->Codl,
+            title: $book->Titulo,
+            publisher: $book->Editora,
+            edition: $book->Edicao,
+            yearPublication: $book->AnoPublicacao,
+            price: $book->Valor,
+            authors: AuthorEntity::fromCollection($book->authors),
+            subjects: SubjectEntity::fromCollection($book->subjects),
+            createdAt: $book->created_at,
+            updatedAt: $book->updated_at,
+            id: $book->Codl,
         );
     }
 
@@ -105,18 +110,7 @@ class BookRepository implements BookRepositoryInterface
         $book->authors()->sync($data->getAuthors());
         $book->subjects()->sync($data->getSubjects());
 
-        return new BookEntity(
-            title: $book->Titulo,
-            publisher: $book->Editora,
-            edition: $book->Edicao,
-            yearPublication: $book->AnoPublicacao,
-            price: $book->Valor,
-            authors: AuthorEntity::fromCollection($book->authors),
-            subjects: SubjectEntity::fromCollection($book->subjects),
-            createdAt: $book->created_at,
-            updatedAt: $book->updated_at,
-            id: $book->Codl,
-        );
+        return $this->makeEntity($book);
     }
 
     /**

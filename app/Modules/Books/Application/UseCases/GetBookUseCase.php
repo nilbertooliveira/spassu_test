@@ -24,14 +24,6 @@ class GetBookUseCase
     {
         $data = $this->bookRepository->find($id);
 
-        return new BookDto(title: $data->getTitle(),
-            publisher: $data->getPublisher(),
-            edition: $data->getEdition(),
-            yearPublication: $data->getYearPublication(),
-            price: $data->getPrice(),
-            authors: $data->getAuthors(),
-            subjects: $data->getSubjects(),
-            id: $data->getId()
-        );
+        return BookDto::fromEntity($data);
     }
 }

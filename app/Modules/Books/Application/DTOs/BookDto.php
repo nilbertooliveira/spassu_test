@@ -41,41 +41,77 @@ class BookDto
         $this->id = $id;
     }
 
-    /**
-     * @param BookEntity[] $data
-     * @return array
-     */
-    public static function fromEntities(array $data): array
+    public static function fromArray(array $data): BookDto
     {
-        return collect($data)->map(function (BookEntity $item) {
-            return new self(
-                $item->getTitle(),
-                $item->getPublisher(),
-                $item->getEdition(),
-                $item->getYearPublication(),
-                $item->getPrice(),
-                $item->getAuthors(),
-                $item->getSubjects(),
-                $item->getId()
-            );
-        })->toArray();
+        return new BookDto(
+            title: $data['title'],
+            publisher: $data['publisher'],
+            edition: $data['edition'],
+            yearPublication: $data['yearPublication'],
+            price: $data['price'],
+            authors: $data['authors'],
+            subjects: $data['subjects'],
+            id: $data['id'] ?? null,
+        );
     }
 
-    public static function toArray(array $data): array
+    /**
+     * @param BookEntity[] $entities
+     * @return BookDto[]
+     */
+    public static function fromEntities(array $entities): array
     {
-        return collect($data)->map(function ($item) {
-            return [
-                'id' => $item->getId(),
-                'title' => $item->getTitle(),
-                'publisher' => $item->getPublisher(),
-                'edition' => $item->getEdition(),
-                'yearPublication' => $item->getYearPublication(),
-                'price' => $item->getPrice(),
-                'authors' => AuthorDto::toArray($item->getAuthors()),
-                'subjects' => SubjectDto::toArray($item->getSubjects()),
-            ];
-        })->toArray();
+        return array_map(function (BookEntity $item) {
+            return self::fromEntity($item);
+        }, $entities);
     }
+
+    public static function fromEntity(BookEntity $entity): BookDto
+    {
+        return new self(
+            $entity->getTitle(),
+            $entity->getPublisher(),
+            $entity->getEdition(),
+            $entity->getYearPublication(),
+            $entity->getPrice(),
+            $entity->getAuthors(),
+            $entity->getSubjects(),
+            $entity->getId(),
+        );
+    }
+
+    /**
+     * @param BookDto|BookDto[] $books
+     * @return array
+     */
+    public static function toArray(BookDto|array $books): array
+    {
+        if ($books instanceof BookDto) {
+            return $books->toSingleArray();
+        }
+        return array_map(function ($book) {
+            if (!$book instanceof BookDto) {
+                throw new \InvalidArgumentException('Todos os itens devem ser instâncias de BookDto.');
+            }
+            return $book->toSingleArray();
+        }, $books);
+    }
+
+
+    private function toSingleArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'publisher' => $this->getPublisher(),
+            'edition' => $this->getEdition(),
+            'yearPublication' => $this->getYearPublication(),
+            'price' => $this->getPrice(),
+            'authors' => AuthorDto::toArray($this->getAuthors()),
+            'subjects' => SubjectDto::toArray($this->getSubjects()),
+        ];
+    }
+
 
     /**
      * @return string

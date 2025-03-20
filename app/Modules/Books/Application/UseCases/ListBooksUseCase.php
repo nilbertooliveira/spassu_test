@@ -16,9 +16,13 @@ class ListBooksUseCase
         $this->bookRepository = $bookRepository;
     }
 
+    /**
+     * @return BookDto[]
+     */
     public function execute(): array
     {
         $data = $this->bookRepository->all();
+
         return BookDto::fromEntities($data);
     }
 }
