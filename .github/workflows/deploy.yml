@@ -72,14 +72,20 @@ jobs:
 
             echo "🛠 Verificando diretório do projeto..."
             if [ ! -d /home/ubuntu/projetos/${REPO_NAME} ]; then
-              git clone git@github.com:${GITHUB_REPOSITORY}.git ${REPO_NAME}
+              echo "Clonando o repositório: git@github.com:${GITHUB_REPOSITORY}.git"
+              git clone git@github.com:${GITHUB_REPOSITORY}.git /home/ubuntu/projetos/${REPO_NAME}
             fi
 
             cd /home/ubuntu/projetos/${REPO_NAME}
 
-            echo "🛠 Atualizando código no servidor..."
-            git fetch --tags
-            git checkout ${GITHUB_REF_NAME}
+            # Detecta a ref atual (tag ou branch)
+            CURRENT_REF=${GITHUB_REF##*/} # Obtém somente o nome da tag (ou branch)
+
+            echo "🔄 Fazendo checkout da tag ou branch '${CURRENT_REF}'..."
+            git fetch --all --tags
+            git checkout ${CURRENT_REF}
+            git pull origin ${CURRENT_REF}
+
 
             # Verificar se .env existe, senão copiar de .env.example
             if [ ! -f .env ]; then
