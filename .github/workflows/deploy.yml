@@ -43,12 +43,14 @@ jobs:
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
+        env:
+          SERVER_SSH_USER: ${{ secrets.SERVER_SSH_USER }}
 
       - name: Configurar SSH
         run: |
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.SERVER_SSH_KEY }}" > /home/$SERVER_SSH_USER/.ssh/id_rsa
+          chmod 600 /home/$SERVER_SSH_USER/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> /home/$SERVER_SSH_USER/.ssh/known_hosts
 
       - name: Deploy no AWS Lightsail
         env:
