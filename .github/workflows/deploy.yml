@@ -76,6 +76,7 @@ jobs:
               git clone git@github.com:${GITHUB_REPOSITORY}.git /home/ubuntu/projetos/${REPO_NAME}
             fi
 
+            echo "Entrando no dir: /home/ubuntu/projetos/${REPO_NAME}"
             cd /home/ubuntu/projetos/${REPO_NAME}
 
             # Detecta a ref atual (tag ou branch)
