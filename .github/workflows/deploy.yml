@@ -84,7 +84,7 @@ jobs:
             docker-compose down
 
             echo "📦 Construindo a imagem Docker..."
-            docker-compose build
+            docker-compose build --no-cache
 
             echo "🔄 Subindo os containers..."
             docker-compose up -d --remove-orphans

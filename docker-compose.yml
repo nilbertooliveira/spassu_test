@@ -5,7 +5,7 @@ services:
             dockerfile: Dockerfile
         container_name: laravel-app
         volumes:
-            - .:/var/www/html:cached
+            - .:/var/www/html
             - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini   # Configuração customizada do PHP
             - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini # Arquivo de configuração do Xdebug
         ports:
@@ -30,7 +30,7 @@ services:
         ports:
             - "80:80"              # Porta para acessar o NGINX (HTTP)
         volumes:
-            - .:/var/www/html:ro     # Monta os arquivos da aplicação no contêiner para o NGINX
+            - .:/var/www/html     # Monta os arquivos da aplicação no contêiner para o NGINX
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf # Configuração NGINX
         depends_on:
             - laravel-app            # Start apenas após o serviço `laravel-app`
