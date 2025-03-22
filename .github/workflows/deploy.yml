@@ -69,11 +69,13 @@ jobs:
           REPO_NAME: ${{ github.repository }}
         run: |
           ssh $SERVER_SSH_USER@$SERVER_HOST << 'EOF'
+
             echo "🛠 Verificando diretório do projeto..."
-            cd /home/ubuntu/projetos/${REPO_NAME} || exit 1
-            if [ ! -d .git ]; then
-              git clone git@github.com:${GITHUB_REPOSITORY}.git .
+            if [ ! -d /home/ubuntu/projetos/${REPO_NAME} ]; then
+              git clone git@github.com:${GITHUB_REPOSITORY}.git ${REPO_NAME}
             fi
+
+            cd /home/ubuntu/projetos/${REPO_NAME}
 
             echo "🛠 Atualizando código no servidor..."
             git fetch --tags
