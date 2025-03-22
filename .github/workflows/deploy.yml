@@ -21,6 +21,12 @@ jobs:
           extensions: pdo, pdo_mysql, redis
           coverage: none
 
+      - name: Instalar dependências do PHP (Composer)
+        run: composer install --no-dev --no-interaction --prefer-dist
+
+      - name: Node.js (NPM)
+        run: npm install && npm run build
+
       - name: Rodar Testes Unitários
         run: php artisan test --parallel --stop-on-failure
 
