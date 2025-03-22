@@ -59,6 +59,14 @@ RUN rm -rf /var/cache/apk/* /tmp/* /usr/src/php
 # Configurar diretório de trabalho
 WORKDIR /var/www/html
 
+# Copiar o código da aplicação para o container
+COPY . .
+
+# Instalar dependências do PHP (Composer) e Node.js (NPM)
+RUN composer install --no-dev --no-interaction --prefer-dist
+RUN npm install
+RUN npm run build
+
 # Expor as portas necessárias
 EXPOSE 9000 9003 5173
 
