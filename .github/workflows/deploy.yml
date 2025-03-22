@@ -28,7 +28,7 @@ jobs:
         run: npm install && npm run build
 
       - name: Rodar Testes Unitários
-        run: php artisan test --parallel --stop-on-failure
+        run: php artisan test --stop-on-failure
 
   # 🚀 Etapa 2: Deploy no AWS Lightsail (só se os testes passarem)
   deploy:
