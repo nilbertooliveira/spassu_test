@@ -61,13 +61,13 @@ jobs:
           ssh $SERVER_SSH_USER@$SERVER_HOST << 'EOF'
             set -e
             echo "🛠 Verificando diretório do projeto..."
-            if [ ! -d "/home/$SERVER_SSH_USER/${REPO_NAME}" ]; then
+            if [ ! -d "/home/${SERVER_SSH_USER}/${REPO_NAME}" ]; then
               echo "📂 Projeto não encontrado. Clonando novo repositório..."
-              git clone https://github.com/${REPO_NAME}.git /home/$SERVER_SSH_USER/${REPO_NAME}
+              git clone https://github.com/${REPO_NAME}.git /home/${SERVER_SSH_USER}/${REPO_NAME}
             fi
 
             echo "🛠 Atualizando código no servidor..."
-            cd /home/$SERVER_SSH_USER/${REPO_NAME}
+            cd /home/${SERVER_SSH_USER}/${REPO_NAME}
             git checkout main
             git pull origin main
 
