@@ -22,7 +22,7 @@ jobs:
           coverage: none
 
       - name: Instalar dependências do PHP (Composer)
-        run: composer install
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Node.js (NPM)
         run: npm install && npm run build
