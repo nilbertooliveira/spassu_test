@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
+        with:
+          path: ./  # Evita duplicação
 
       - name: Configurar PHP e Dependências
         uses: shivammathur/setup-php@v2
@@ -27,8 +29,11 @@ jobs:
       - name: Node.js (NPM)
         run: npm install && npm run build
 
+      - name: Verificar diretórios e listar arquivos para depuração
+        run: ls -R
+
       - name: Rodar Testes Unitários
-        run: php artisan test --stop-on-failure
+        run: php artisan test --stop-on-failure tests
 
   # 🚀 Etapa 2: Deploy no AWS Lightsail (só se os testes passarem)
   deploy:
