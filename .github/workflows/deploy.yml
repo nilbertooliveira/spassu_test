@@ -73,14 +73,7 @@ jobs:
             echo "🛠 Verificando diretório do projeto..."
             cd /home/ubuntu/projetos/spassu_test
 
-            # Detecta a ref atual (tag ou branch)
-            CURRENT_REF=${GITHUB_REF##*/} # Obtém somente o nome da tag (ou branch)
-
-            echo "🔄 Fazendo checkout da tag ou branch '${CURRENT_REF}'..."
-            git fetch --all --tags
-            git checkout ${CURRENT_REF}
-            git pull origin ${CURRENT_REF}
-
+            git pull origin dev
 
             # Verificar se .env existe, senão copiar de .env.example
             if [ ! -f .env ]; then
