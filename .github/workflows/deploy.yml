@@ -71,13 +71,7 @@ jobs:
           ssh $SERVER_SSH_USER@$SERVER_HOST << 'EOF'
 
             echo "🛠 Verificando diretório do projeto..."
-            if [ ! -d /home/ubuntu/projetos/${REPO_NAME} ]; then
-              echo "Clonando o repositório: git@github.com:${GITHUB_REPOSITORY}.git"
-              git clone git@github.com:${GITHUB_REPOSITORY}.git /home/ubuntu/projetos/${REPO_NAME}
-            fi
-
-            echo "Entrando no dir: /home/ubuntu/projetos/${REPO_NAME}"
-            cd /home/ubuntu/projetos/${REPO_NAME}
+            cd /home/ubuntu/projetos/spassu_test
 
             # Detecta a ref atual (tag ou branch)
             CURRENT_REF=${GITHUB_REF##*/} # Obtém somente o nome da tag (ou branch)
