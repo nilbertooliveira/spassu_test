@@ -43,13 +43,11 @@ jobs:
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
-        env:
-          SERVER_SSH_USER: ${{ secrets.SERVER_SSH_USER }}
 
       - name: Configurar SSH
         run: |
           echo "${{ secrets.SERVER_SSH_KEY }}" > /home/$SERVER_SSH_USER/.ssh/id_rsa
-          chmod 600 /home/$SERVER_SSH_USER/.ssh/id_rsa
+          chmod 600 /home/${{ secrets.SERVER_SSH_USER }}/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> /home/$SERVER_SSH_USER/.ssh/known_hosts
 
       - name: Deploy no AWS Lightsail
@@ -61,13 +59,13 @@ jobs:
           ssh $SERVER_SSH_USER@$SERVER_HOST << 'EOF'
             set -e
             echo "🛠 Verificando diretório do projeto..."
-            if [ ! -d "/home/${SERVER_SSH_USER}/${REPO_NAME}" ]; then
+            if [ ! -d "/home/$SERVER_SSH_USER/${REPO_NAME}" ]; then
               echo "📂 Projeto não encontrado. Clonando novo repositório..."
-              git clone https://github.com/${REPO_NAME}.git /home/${SERVER_SSH_USER}/${REPO_NAME}
+              git clone https://github.com/${REPO_NAME}.git /home/$SERVER_SSH_USER/${REPO_NAME}
             fi
 
             echo "🛠 Atualizando código no servidor..."
-            cd /home/${SERVER_SSH_USER}/${REPO_NAME}
+            cd /home/$SERVER_SSH_USER/${REPO_NAME}
             git checkout main
             git pull origin main
 
