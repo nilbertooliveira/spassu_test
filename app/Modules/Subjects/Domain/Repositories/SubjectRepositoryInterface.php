@@ -3,6 +3,7 @@
 namespace App\Modules\Subjects\Domain\Repositories;
 
 use App\Modules\Subjects\Domain\Entities\SubjectEntity;
+use Illuminate\Contracts\Pagination\Paginator;
 
 interface SubjectRepositoryInterface
 {
@@ -18,4 +19,6 @@ interface SubjectRepositoryInterface
     public function update(SubjectEntity $data): SubjectEntity;
 
     public function delete(int $id): ?bool;
+
+    public function paginated(int $perPage): Paginator;
 }

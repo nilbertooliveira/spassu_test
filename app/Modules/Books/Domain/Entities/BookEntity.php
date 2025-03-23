@@ -3,6 +3,7 @@
 namespace App\Modules\Books\Domain\Entities;
 
 use App\Modules\Authors\Domain\Entities\AuthorEntity;
+use App\Modules\Books\Application\DTOs\BookDto;
 use App\Modules\Subjects\Domain\Entities\SubjectEntity;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -76,7 +77,7 @@ class BookEntity
 
     public static function toArray(array $data): array
     {
-        return collect($data)->map(function ($item) {
+        return array_map(function ($item) {
             return [
                 'id' => $item->getId(),
                 'title' => $item->getTitle(),
@@ -87,7 +88,23 @@ class BookEntity
                 'authors' => AuthorEntity::fromCollection($item->authors),
                 'subjects' => SubjectEntity::fromCollection($item->subjects),
             ];
-        })->toArray();
+        }, $data);
+    }
+
+    public static function fromDto(BookDto $bookDto): BookEntity
+    {
+        return new BookEntity(
+            title: $bookDto->getTitle(),
+            publisher: $bookDto->getPublisher(),
+            edition: $bookDto->getEdition(),
+            yearPublication: $bookDto->getYearPublication(),
+            price: $bookDto->getPrice(),
+            authors: $bookDto->getAuthors(),
+            subjects: $bookDto->getSubjects(),
+            createdAt: now(),
+            updatedAt: now(),
+            id: $bookDto->getId()
+        );
     }
 
     /**

@@ -15,7 +15,6 @@ use App\Modules\Books\Infrastructure\Adapters\Http\Requests\BookRequest;
 use App\Modules\Subjects\Application\DTOs\SubjectDto;
 use App\Modules\Subjects\Application\UseCases\ListSubjectsUseCase;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BookController extends Controller
@@ -60,7 +59,7 @@ class BookController extends Controller
     {
         $bookDto = $this->getBookUseCase->execute($id);
 
-        $data = BookDto::toArray([$bookDto]);
+        $data = BookDto::toArray($bookDto);
 
         $authorsDto = $this->listAuthorsUseCase->execute();
         $subjectsDto = $this->listSubjectsUseCase->execute();
@@ -68,7 +67,7 @@ class BookController extends Controller
         $authors = AuthorDto::toArray($authorsDto);
         $subjects = SubjectDto::toArray($subjectsDto);
 
-        return view('books.edit')->with('books', $data[0])
+        return view('books.edit')->with('books', $data)
             ->with('authors', $authors)
             ->with('subjects', $subjects);
     }
@@ -89,15 +88,7 @@ class BookController extends Controller
 
     public function store(BookRequest $request): RedirectResponse
     {
-        $BookDto = new BookDto(
-            title: $request->title,
-            publisher: $request->publisher,
-            edition: $request->edition,
-            yearPublication: $request->yearPublication,
-            price: $request->price,
-            authors: $request->authors,
-            subjects: $request->subjects,
-        );
+        $BookDto = BookDto::fromArray($request->all());
 
         $this->createBookUseCase->execute($BookDto);
 
@@ -106,16 +97,8 @@ class BookController extends Controller
 
     public function update(BookRequest $request, int $id): RedirectResponse
     {
-        $BookDto = new BookDto(
-            title: $request->title,
-            publisher: $request->publisher,
-            edition: $request->edition,
-            yearPublication: $request->yearPublication,
-            price: $request->price,
-            authors: $request->authors,
-            subjects: $request->subjects,
-            id: $id
-        );
+        $request->mergeIfMissing(['id' => $id]);
+        $BookDto = BookDto::fromArray($request->all());
 
         $this->updateBookUseCase->execute($BookDto);
 

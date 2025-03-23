@@ -7,6 +7,7 @@ namespace App\Modules\Subjects\Infrastructure\Repositories;
 use App\Modules\Subjects\Domain\Entities\SubjectEntity;
 use App\Modules\Subjects\Domain\Repositories\SubjectRepositoryInterface;
 use App\Modules\Subjects\Infrastructure\Models\Subject;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
@@ -98,5 +99,12 @@ class SubjectRepository implements SubjectRepositoryInterface
             throw new ModelNotFoundException("Assunto com identificador $id não foi encontrado!");
         }
         return $model->delete();
+    }
+
+    public function paginated(int $perPage): Paginator
+    {
+        return $this->model
+            ->orderBy('codAs')
+            ->paginate($perPage);
     }
 }

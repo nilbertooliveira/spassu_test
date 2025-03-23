@@ -1,7 +1,17 @@
-   includes:
-       - ./vendor/nunomaduro/larastan/extension.neon
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
 
-   parameters:
-       paths:
-           - app
-       level: 7
+parameters:
+
+    paths:
+        - app/
+
+    # Level 10 is the highest level
+    level: 5
+
+#    ignoreErrors:
+#        - '#PHPDoc tag @var#'
+#
+#    excludePaths:
+#        - ./*/*/FileToBeExcluded.php

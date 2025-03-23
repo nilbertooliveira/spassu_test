@@ -1,0 +1,78 @@
+name: CI/CD Laravel on AWS Lightsail
+
+on:
+  push:
+    tags:
+      - "v*"  # Dispara quando uma tag é criada (ex: v1.0.0)
+
+jobs:
+  # 🚀 Etapa 1: Build e Testes
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+        with:
+          path: ./  # Evita duplicação
+
+      - name: Configurar PHP e Dependências
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo, pdo_mysql, redis
+          coverage: none
+
+      - name: Instalar dependências do PHP (Composer)
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Node.js (NPM)
+        run: npm install && npm run build
+
+      - name: Verificar diretórios e listar arquivos para depuração
+        run: ls -R
+
+      - name: Rodar Testes Unitários
+        run: php artisan test --stop-on-failure tests
+
+  # 🚀 Etapa 2: Deploy no AWS Lightsail (só se os testes passarem)
+  deploy:
+    needs: build-and-test  # Só executa se os testes passarem
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Configurar SSH
+        run: |
+          # Verifica se o diretório ~/.ssh existe, caso contrário cria
+          if [ ! -d ~/.ssh ]; then
+            mkdir -p ~/.ssh
+            chmod 700 ~/.ssh
+          fi
+
+          # Verifica se o arquivo ~/.ssh/id_rsa existe, caso contrário cria
+          if [ ! -f ~/.ssh/id_rsa ]; then
+            echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+          fi
+
+          # Adiciona o host remoto ao known_hosts
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy no AWS Lightsail
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_SSH_USER: ${{ secrets.SERVER_SSH_USER }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          # Conecta no servidor e realiza o pull do código mais recente
+          ssh ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+
+            echo "🚀 Executando script de deploy..."
+            bash ./docker/deploy.sh
+
+          EOF
+

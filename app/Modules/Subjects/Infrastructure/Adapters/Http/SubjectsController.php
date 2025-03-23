@@ -7,6 +7,7 @@ use App\Modules\Subjects\Application\DTOs\SubjectDto;
 use App\Modules\Subjects\Application\UseCases\CreateSubjectUseCase;
 use App\Modules\Subjects\Application\UseCases\DeleteSubjectUseCase;
 use App\Modules\Subjects\Application\UseCases\GetSubjectUseCase;
+use App\Modules\Subjects\Application\UseCases\ListSubjectsPaginatedUseCase;
 use App\Modules\Subjects\Application\UseCases\ListSubjectsUseCase;
 use App\Modules\Subjects\Application\UseCases\UpdateSubjectUseCase;
 use App\Modules\Subjects\Infrastructure\Adapters\Http\Requests\SubjectRequest;
@@ -23,13 +24,15 @@ class SubjectsController extends Controller
     private CreateSubjectUseCase $createSubjectUseCase;
     private UpdateSubjectUseCase $updateSubjectUseCase;
     private DeleteSubjectUseCase $deleteSubjectUseCase;
+    private ListSubjectsPaginatedUseCase $listSubjectsPaginatedUseCase;
 
     public function __construct(
-        ListSubjectsUseCase  $listSubjectsUseCase,
-        GetSubjectUseCase    $getSubjectUseCase,
-        CreateSubjectUseCase $createSubjectUseCase,
-        UpdateSubjectUseCase $updateSubjectUseCase,
-        DeleteSubjectUseCase $deleteSubjectUseCase,
+        ListSubjectsUseCase          $listSubjectsUseCase,
+        GetSubjectUseCase            $getSubjectUseCase,
+        CreateSubjectUseCase         $createSubjectUseCase,
+        UpdateSubjectUseCase         $updateSubjectUseCase,
+        DeleteSubjectUseCase         $deleteSubjectUseCase,
+        ListSubjectsPaginatedUseCase $listSubjectsPaginatedUseCase
     )
     {
 
@@ -38,17 +41,18 @@ class SubjectsController extends Controller
         $this->createSubjectUseCase = $createSubjectUseCase;
         $this->updateSubjectUseCase = $updateSubjectUseCase;
         $this->deleteSubjectUseCase = $deleteSubjectUseCase;
+        $this->listSubjectsPaginatedUseCase = $listSubjectsPaginatedUseCase;
     }
 
 
-    public function index(): View
-    {
-        $subjectDto = $this->listSubjectsUseCase->execute();
-
-        $subjects = SubjectDto::toArray($subjectDto);
-
-        return view('subjects.index', compact('subjects'));
-    }
+//    public function index(): View
+//    {
+//        $subjectDto = $this->listSubjectsUseCase->execute();
+//
+//        $subjects = SubjectDto::toArray($subjectDto);
+//
+//        return view('subjects.index', compact('subjects'));
+//    }
 
 
     public function create(): View
@@ -98,5 +102,21 @@ class SubjectsController extends Controller
         $this->deleteSubjectUseCase->execute($id);
 
         return redirect()->route('subjects.index');
+    }
+
+    public function index(Request $request): View
+    {
+        $perPage = $request->query('per_page', 10);
+
+        $models = $this->listSubjectsPaginatedUseCase->execute($perPage);
+
+        $subjects = array_map(function ($item) {
+            return [
+                'id' => $item['codAs'],
+                'description' => $item['Descricao'],
+            ];
+        }, $models->getCollection()->toArray());
+
+        return view('subjects.index', compact('subjects', 'models'));
     }
 }

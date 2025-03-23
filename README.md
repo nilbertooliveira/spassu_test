@@ -12,23 +12,31 @@ Estilo arquitetural: Hexagonal com DDD
 
 2. Rodar o comando abaixo para fazer o build do projeto, pulling das images, criar rede externa e hosts:
    ```
-   ./vendor/bin/sail up -d
+   docker-compose up -d
    ```
 3. Instalar as dependências e permissões:
     ```
-    ./vendor/bin/sail composer install
-    ./vendor/bin/sail npm run build
-    sudo chmod -R 777 storage/
+   docker-compose exec laravel-app composer install
+   docker-compose exec laravel-app npm install
+   
+   docker-compose exec laravel-app npm run build
+   docker-compose exec laravel-app php artisan storage:link
+   
+   sudo chmod -R 777 storage/ bootstrap/cache
     ```
 
 4. Configurar a base de dados
     ```
-    ./vendor/bin/sail php artisan migrate
-    ./vendor/bin/sail php artisan db:seed
+   docker-compose exec laravel-app php artisan migrate --seed --force
     ```
 5. Executar testes
     ```
-    ./vendor/bin/sail php artisan test
+   docker-compose exec laravel-app php artisan test
+    ```
+   
+6. Processar o Relatório
+    ```
+    docker-compose exec laravel-app php artisan queue:work
     ```
 
 ##### Usuário:

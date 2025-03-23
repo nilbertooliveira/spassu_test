@@ -42,6 +42,19 @@
                             @endforeach
                             </tbody>
                         </table>
+                        {{-- Controles de paginação --}}
+                        <div class="d-flex justify-content-center mt-3">
+                            @if ($models->hasPages())
+                                <ul class="pagination pagination-sm">
+                                    {{-- Números das páginas --}}
+                                    @foreach ($models->getUrlRange(1, $models->lastPage()) as $page => $url)
+                                        <li class="page-item {{ $page == $models->currentPage() ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
