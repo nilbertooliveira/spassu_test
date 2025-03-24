@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('books', BookController::class);
     Route::resource('authors', AuthorController::class);
     Route::resource('subjects', SubjectsController::class)->except('index');
-    Route::get('subjects', [SubjectsController::class, 'paginatedIndex'])->name('subjects.index');
+    //Route::get('subjects', [SubjectsController::class, 'paginatedIndex'])->name('subjects.index');
     Route::get('generate-pdf', [BookReportController::class, 'generate'])->name('generate-pdf');
 });
 
