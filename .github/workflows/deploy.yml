@@ -71,8 +71,12 @@ jobs:
           # Conecta no servidor e realiza o pull do código mais recente
           ssh ${{ secrets.SERVER_SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
 
+
+            ls -la
+
+
             echo "🚀 Executando script de deploy..."
-            bash ./docker/deploy.sh
+            bash docker/deploy.sh
 
           EOF
 
