@@ -73,7 +73,7 @@ jobs:
 
             echo "📥 Fazendo pull do código mais recente..."
             cd /home/ubuntu/projetos/spassu_test || exit 1
-            git pull origin dev
+            git pull origin dev --rebase
 
             echo "🚀 Executando script de deploy..."
             bash ./docker/deploy.sh
